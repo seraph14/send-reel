@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Inter } from "next/font/google";
+import "@/styles/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +17,47 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} bg-gray-100 text-gray-900 min-h-screen flex flex-col`}
       >
-        {children}
+        {/* Header */}
+        <header className="bg-white shadow-md p-4">
+          <nav className="container mx-auto flex justify-between items-center">
+            <a href="/" className="text-2xl font-bold text-indigo-600">
+              send.reel
+            </a>
+            <ul className="flex space-x-4">
+              <li>
+                <a
+                  href="/"
+                  className="text-gray-700 hover:text-indigo-600 font-medium"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/create"
+                  className="text-gray-700 hover:text-indigo-600 font-medium"
+                >
+                  Create Video
+                </a>
+              </li>
+              {/* Add more navigation links as needed */}
+            </ul>
+          </nav>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-grow container mx-auto p-4 md:p-8">
+          {children}
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-gray-800 text-white p-4 mt-8">
+          <div className="container mx-auto text-center text-sm">
+            &copy; {new Date().getFullYear()} reel.farm. All rights reserved.
+          </div>
+        </footer>
       </body>
     </html>
   );
