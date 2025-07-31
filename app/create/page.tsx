@@ -1,16 +1,22 @@
 "use client"; // This page will contain client-side interactivity
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // We'll import Remotion Player and other components later
 // import { Player } from '@remotion/player';
 // import { MyVideoComposition } from '../../remotion/MyVideoComposition'; // Placeholder for your main Remotion composition
 
 export default function CreateVideoPage() {
   const [selectedHook, setSelectedHook] = useState<string | null>(null);
-  const [userVideo, setUserVideo] = useState<File | null>(null);
+
+  const [userVideoFile, setUserVideoFile] = useState<File | null>(null); // Stores the File object
+  const [userVideoUrl, setUserVideoUrl] = useState<string | null>(null); // Stores the URL for preview/Remotion
+
   const [captions, setCaptions] = useState<string>("");
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Placeholder functions for future implementation
   const handleHookSelect = (hookId: string) => {
@@ -18,24 +24,36 @@ export default function CreateVideoPage() {
     console.log("Selected hook:", hookId);
   };
 
-  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
+
       // Basic file type validation
       if (!file.type.startsWith("video/")) {
-        setError("Please upload a valid video file.");
-        setUserVideo(null);
+        setError("Please upload a valid video file (e.g., MP4, MOV).");
+        setUserVideoFile(null);
+        setUserVideoUrl(null);
         return;
       }
       // Basic file size limit (e.g., 100MB)
-      if (file.size > 100 * 1024 * 1024) {
-        setError("Video file size exceeds 100MB limit.");
-        setUserVideo(null);
+      const MAX_FILE_SIZE_MB = 100;
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        setError(`Video file size exceeds ${MAX_FILE_SIZE_MB}MB limit.`);
+        setUserVideoFile(null);
+        setUserVideoUrl(null);
         return;
       }
-      setUserVideo(file);
+
+      setUserVideoFile(file);
       setError(null);
-      console.log("Uploaded video:", file.name);
+
+      // Directly create a URL for the selected file for immediate preview
+      if (userVideoUrl) {
+        URL.revokeObjectURL(userVideoUrl); // Clean up previous URL if exists
+      }
+      const objectUrl = URL.createObjectURL(file);
+      setUserVideoUrl(objectUrl);
+      console.log("Selected video for preview:", file.name, objectUrl);
     }
   };
 
@@ -150,9 +168,10 @@ export default function CreateVideoPage() {
             <input
               type="file"
               accept="video/*"
-              onChange={handleVideoUpload}
+              onChange={handleFileChange}
               className="hidden"
               id="video-upload"
+              ref={fileInputRef}
             />
             <label
               htmlFor="video-upload"
@@ -177,10 +196,15 @@ export default function CreateVideoPage() {
               </p>
               <p className="text-xs text-gray-500 mt-1">(Max 100MB, MP4/MOV)</p>
             </label>
-            {userVideo && (
+            {userVideoFile && (
               <p className="mt-3 text-sm text-gray-700">
                 Selected:{" "}
-                <span className="font-semibold">{userVideo.name}</span>
+                <span className="font-semibold">{userVideoFile.name}</span>
+              </p>
+            )}
+            {userVideoUrl && (
+              <p className="mt-3 text-sm text-green-600 font-semibold">
+                Video Ready for Preview!
               </p>
             )}
           </div>
@@ -190,7 +214,7 @@ export default function CreateVideoPage() {
           </h2>
           <button
             onClick={generateCaptions}
-            disabled={!userVideo || isLoading}
+            disabled={!userVideoUrl || isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-75"
           >
             {isLoading ? "Generating..." : "Generate Captions"}
@@ -209,21 +233,29 @@ export default function CreateVideoPage() {
             Video Preview
           </h2>
           <div className="w-full max-w-md aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative">
-            {/* Remotion Player will go here */}
-            {/* For now, a placeholder */}
-            <p className="text-gray-500 text-lg">
-              Your video preview will appear here.
-            </p>
-            {/* Example of a placeholder image */}
-            {!userVideo && !selectedHook && (
-              <img
-                src="https://placehold.co/360x640/D1D5DB/6B7280?text=Video+Preview"
-                alt="Video Placeholder"
+            {userVideoUrl ? (
+              <video
+                src={userVideoUrl}
+                controls
                 className="absolute inset-0 w-full h-full object-cover"
-              />
+              >
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <>
+                <p className="text-gray-500 text-lg">
+                  Your video preview will appear here.
+                </p>
+                <img
+                  src="https://placehold.co/360x640/D1D5DB/6B7280?text=Video+Preview"
+                  alt="Video Placeholder"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </>
             )}
+            {/* Remotion Player will go here later, potentially overlaying or replacing this video tag */}
             {/*
-            {userVideo && selectedHook && (
+            {userVideoUrl && selectedHook && (
               <Player
                 component={MyVideoComposition} // Your main Remotion composition
                 durationInFrames={300} // Example duration
@@ -231,9 +263,8 @@ export default function CreateVideoPage() {
                 compositionWidth={1080} // Vertical video width
                 compositionHeight={1920} // Vertical video height
                 inputProps={{
-                  // Pass data to your Remotion composition
                   hookId: selectedHook,
-                  userVideoUrl: URL.createObjectURL(userVideo), // Use a blob URL for local preview
+                  userVideoUrl: userVideoUrl, // Use the URL from the backend
                   captions: captions,
                 }}
                 controls
@@ -248,7 +279,7 @@ export default function CreateVideoPage() {
           </h2>
           <button
             onClick={exportVideo}
-            disabled={!selectedHook || !userVideo || isLoading}
+            disabled={!selectedHook || !userVideoUrl || isLoading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-75"
           >
             {isLoading ? "Exporting..." : "Export Video"}
