@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import Head from "next/head";
+import Link from "next/link";
+import { Calendar, House, Video } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,47 +20,54 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-gray-100 text-gray-900 min-h-screen flex flex-col`}
+        className={`${inter.className} bg-gray-100 text-gray-900 flex flex-col`}
       >
-        {/* Header */}
-        <header className="bg-white shadow-md p-4">
-          <nav className="container mx-auto flex justify-between items-center">
-            <a href="/" className="text-2xl font-bold text-indigo-600">
-              send.reel
-            </a>
-            <ul className="flex space-x-4">
-              <li>
-                <a
-                  href="/"
-                  className="text-gray-700 hover:text-indigo-600 font-medium"
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/create"
-                  className="text-gray-700 hover:text-indigo-600 font-medium"
-                >
-                  Create Video
-                </a>
-              </li>
-              {/* Add more navigation links as needed */}
-            </ul>
-          </nav>
-        </header>
+        <Head>
+          <title>SendReel</title>
+        </Head>
 
-        {/* Main Content */}
-        <main className="flex-grow container mx-auto p-4 md:p-8">
-          {children}
-        </main>
+        <div className="flex bg-gray-100 min-h-screen">
+          {/* Left Sidebar */}
+          <aside className="w-64 bg-[#EEEFE8] shadow-xl-r flex flex-col p-4 border-r border-gray-200">
+            <div className="flex items-center space-x-2 pb-6 mb-6 border-b border-gray-200">
+              <svg
+                className="h-8 w-8 text-indigo-600"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zM12 4.09L19.46 8.05L12 11.91L4.54 8.05L12 4.09zM4 9.61L11.5 13.48v6.94L4 16.54V9.61zM12.5 20.42v-6.94L20 9.61v6.93L12.5 20.42z" />
+              </svg>
+              <span className="text-xl font-bold text-gray-800">SendReel</span>
+            </div>
+            <nav className="flex-1 space-y-2">
+              <Link
+                href={"/"}
+                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <House />
+                <span>Home</span>
+              </Link>
+              <Link
+                href="/create"
+                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Video />
+                <span>Hook + Demo</span>
+              </Link>
+              <Link
+                href="/create"
+                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Calendar />
+                <span>Schedule</span>
+              </Link>
+            </nav>
+            <div className="mt-auto pt-6 border-t border-gray-200"></div>
+          </aside>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white p-4 mt-8">
-          <div className="container mx-auto text-center text-sm">
-            &copy; {new Date().getFullYear()} reel.farm. All rights reserved.
-          </div>
-        </footer>
+          {/* Main Content */}
+          <main className="flex-1 p-8 overflow-y-auto">{children}</main>
+        </div>
       </body>
     </html>
   );
