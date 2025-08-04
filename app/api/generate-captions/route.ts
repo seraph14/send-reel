@@ -268,7 +268,7 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(
       { error: "Failed to generate captions." },
