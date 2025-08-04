@@ -9,7 +9,6 @@ export interface CaptionWord {
 export interface MyVideo {
   name: string;
   s3Url: string;
-  previewUrl: string; // Storing the object URL for local preview
 }
 
 const captionSchema = z.object({
