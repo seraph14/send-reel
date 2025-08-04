@@ -23,46 +23,50 @@ export default function RootLayout({
         className={`${inter.className} bg-gray-100 text-gray-900 flex flex-col`}
       >
         <Head>
-          <title>SendReel</title>
+          <title>SendShort</title>
         </Head>
 
-        <div className="flex bg-gray-100 min-h-screen">
+        <div className="flex min-h-screen bg-gray-100">
           {/* Left Sidebar */}
-          <aside className="w-64 bg-[#EEEFE8] shadow-xl-r flex flex-col p-4 border-r border-gray-200">
+          <aside className="w-16 md:w-64 bg-[#EEEFE8] border-r border-gray-200 shadow-md p-4 flex flex-col gap-6">
             <div className="flex items-center space-x-2 pb-6 mb-6 border-b border-gray-200">
               <svg
-                className="h-8 w-8 text-indigo-600"
+                className="h-8 w-8 text-black"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
                 <path d="M12 2L2 7v10l10 5 10-5V7L12 2zM12 4.09L19.46 8.05L12 11.91L4.54 8.05L12 4.09zM4 9.61L11.5 13.48v6.94L4 16.54V9.61zM12.5 20.42v-6.94L20 9.61v6.93L12.5 20.42z" />
               </svg>
-              <span className="text-xl font-bold text-gray-800">SendReel</span>
+              <span className="text-lg font-bold hidden md:block">
+                SendShort
+              </span>
             </div>
-            <nav className="flex-1 space-y-2">
+
+            <nav className="flex flex-col gap-4 w-full">
               <Link
-                href={"/"}
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                href="/"
+                className="flex items-center gap-3 text-gray-600 hover:text-black"
               >
-                <House />
-                <span>Home</span>
+                <House className="w-5 h-5" />
+                <span className="hidden md:inline">Home</span>
               </Link>
+
               <Link
                 href="/create"
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-3 text-gray-600 hover:text-black"
               >
-                <Video />
-                <span>Hook + Demo</span>
+                <Video className="w-5 h-5" />
+                <span className="hidden md:inline">Hook + Demo</span>
               </Link>
+
               <Link
                 href="/create"
-                className="flex items-center space-x-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-3 text-gray-600 hover:text-black"
               >
-                <Calendar />
-                <span>Schedule</span>
+                <Calendar className="w-5 h-5" />
+                <span className="hidden md:inline">Schedule</span>
               </Link>
             </nav>
-            <div className="mt-auto pt-6 border-t border-gray-200"></div>
           </aside>
 
           {/* Main Content */}
