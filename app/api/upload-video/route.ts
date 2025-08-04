@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-  } catch (err: any) {
+  } catch (err) {
     console.error("Error creating presigned S3 post:", err);
     return NextResponse.json(
       { error: "Failed to create S3 presigned post." },

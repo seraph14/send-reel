@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useVideoGeneration } from "@/hooks/useVideoGeneration";
 import UserVideoUploader from "@/components/UserVideoUploader";
 import AIHookSelector from "@/components/AIHookSelector";
@@ -28,7 +28,6 @@ export default function CreateVideoPage() {
     exportVideo,
     uploadVideoToApi,
     myVideos,
-    reset,
   } = useVideoGeneration();
 
   // Clean up the object URL when the component unmounts or a new file is selected

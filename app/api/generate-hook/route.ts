@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // @ts-expect-error
+    // @ts-expect-error: This line works no need for type check
     const videoUrl = output.url().href;
 
     if (!videoUrl) {

@@ -3,6 +3,7 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import PromptModal from "./PromptModal";
 import { Pencil } from "lucide-react";
+import Image from "next/image";
 
 interface Hook {
   id: string;
@@ -82,7 +83,7 @@ const AIHookSelector = ({
             }`}
             onClick={() => handleHookClick(hook)}
           >
-            <img
+            <Image
               src={hook.thumbnail}
               alt={hook.name}
               className="w-24 h-44 object-cover rounded-md"
