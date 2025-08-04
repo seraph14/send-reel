@@ -10,12 +10,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**", // Matches any hostname
-      },
-    ],
+    remotePatterns: [new URL("https://placehold.co/**")],
   },
 };
 

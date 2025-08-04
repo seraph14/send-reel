@@ -23,7 +23,7 @@ export default function RootLayout({
         className={`${inter.className} bg-gray-100 text-gray-900 flex flex-col`}
       >
         <Head>
-          <title>SendShort</title>
+          <title>SendReel</title>
         </Head>
 
         <div className="flex min-h-screen bg-gray-100">
@@ -38,7 +38,7 @@ export default function RootLayout({
                 <path d="M12 2L2 7v10l10 5 10-5V7L12 2zM12 4.09L19.46 8.05L12 11.91L4.54 8.05L12 4.09zM4 9.61L11.5 13.48v6.94L4 16.54V9.61zM12.5 20.42v-6.94L20 9.61v6.93L12.5 20.42z" />
               </svg>
               <span className="text-lg font-bold hidden md:block">
-                SendShort
+                SendReel
               </span>
             </div>
 
