@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    remotePatterns: [new URL("https://placehold.co/**")],
+    remotePatterns: [new URL("https:**")],
   },
 };
 
