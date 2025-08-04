@@ -21,14 +21,14 @@ export const AIHook = ({ aiHookVideoUrl }: z.infer<typeof AIHookProps>) => {
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
-  const transitionDuration = 20;
+  const transitionDuration = 15;
 
   return (
     <AbsoluteFill>
       <Video
         src={
           aiHookVideoUrl ||
-          "https://replicate.delivery/xezq/QPeJZFL8JX2MfUYbvgJtedbztDlIqGj3LS9EUJ6IeS9zPFdUB/tmp30td6b34.mp4"
+          "https://replicate.delivery/xezq/X5K2GEyxxH77I5P9QNAjbetx4gD2JimZreZSGEDrSKcBEWHVA/tmpxtbgn5mq.mp4"
         }
         className="w-full h-full object-cover"
         volume={(f) =>

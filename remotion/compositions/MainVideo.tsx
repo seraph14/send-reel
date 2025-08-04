@@ -23,7 +23,7 @@ export const MainVideo = ({
   const hookDurationFrames = fps * 5; // Duration of the AI hook in frames
   const userVideoStartFrame = hookDurationFrames;
   const userVideoCurrentTimeInSeconds = (frame - userVideoStartFrame) / fps;
-  const transitionDuration = 20;
+  const transitionDuration = 15;
 
   // Interpolate opacity for captions during the user video segment
   const captionOpacity = interpolate(
