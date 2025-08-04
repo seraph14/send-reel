@@ -83,7 +83,7 @@ const AIHookSelector = ({
             }`}
             onClick={() => handleHookClick(hook)}
           >
-            <Image
+            <img
               src={hook.thumbnail}
               alt={hook.name}
               className="w-24 h-44 object-cover rounded-md"
