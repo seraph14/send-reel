@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Player } from "@remotion/player"; // Import Remotion Player
-import { MainVideo } from "@/remotion/compositions/MainVideo";
 import { useVideoGeneration } from "@/hooks/useVideoGeneration";
 import UserVideoUploader from "@/components/UserVideoUploader";
 import AIHookSelector from "@/components/AIHookSelector";
 import { MyVideo } from "@/lib/types";
-import { FPS, VIDEO_HEIGHT, VIDEO_WIDTH } from "@/lib/constants";
+import MainPlayer from "@/components/MainPlayer";
 
 export default function CreateVideoPage() {
   const [selectedHook, setSelectedHook] = useState<string | null>(null);
@@ -15,6 +13,7 @@ export default function CreateVideoPage() {
   const [userVideoPreviewUrl, setUserVideoPreviewUrl] = useState<string | null>(
     null
   );
+  const [prompt, setPrompt] = useState<string>("");
   const [uploadedS3Url, setUploadedS3Url] = useState<string | null>(null);
 
   // Use custom hook to manage state and logic for video creation
@@ -32,8 +31,6 @@ export default function CreateVideoPage() {
     reset,
   } = useVideoGeneration();
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   // Clean up the object URL when the component unmounts or a new file is selected
   useEffect(() => {
     return () => {
@@ -45,17 +42,17 @@ export default function CreateVideoPage() {
 
   // automatically generate captions
   useEffect(() => {
-    if (userVideoPreviewUrl) {
+    if (uploadedS3Url) {
       console.log(
         "User video and hook selected. Automatically generating captions..."
       );
-      generateCaptions(userVideoPreviewUrl);
+      generateCaptions(uploadedS3Url);
     }
-  }, [userVideoPreviewUrl]);
+  }, [uploadedS3Url]);
 
   const handleHookSelect = (hookId: string) => {
     setSelectedHook(hookId);
-    // generateAIHook(hookId);
+    generateAIHook(hookId, prompt);
     console.log("Selected hook:", hookId);
   };
 
@@ -92,21 +89,19 @@ export default function CreateVideoPage() {
       setUploadedS3Url(null);
       console.log("Selected video for preview:", file.name, objectUrl);
 
-      //TODO: uncomment this later
       // Start the upload to S3 via the API immediately using the hook
-      //   const s3FileUrl = await uploadVideoToApi(file);
-      //   setUploadedS3Url(s3FileUrl);
+      const s3FileUrl = await uploadVideoToApi(file);
+      setUploadedS3Url(s3FileUrl);
     }
   };
 
   const handleSelectMyVideo = (video: MyVideo) => {
     // Reset any existing states
-    reset();
     setSelectedHook(null);
 
     // Set the selected video's details
     setUserVideoFile(null); // No file object, as it's from the cache
-    setUserVideoPreviewUrl(video.previewUrl);
+    setUserVideoPreviewUrl(video.s3Url);
     setUploadedS3Url(video.s3Url);
 
     console.log("Selected video from cache:", video.name);
@@ -114,27 +109,61 @@ export default function CreateVideoPage() {
 
   const hookTemplates = [
     {
-      id: "hook1",
-      name: "Dynamic Intro",
-      description: "Energetic text reveal",
-      thumbnail: "https://placehold.co/160x284/E0E7FF/4F46E5?text=Hook+1",
+      id: "cinematic_intro",
+      name: "Cinematic Intro",
+      description:
+        "Epic text reveal with dramatic music and lens flare effects.",
+      thumbnail: "https://placehold.co/160x284/1F2937/FBBF24?text=Cinematic",
     },
     {
-      id: "hook2",
-      name: "Clean Showcase",
-      description: "Minimalist product display",
-      thumbnail: "https://placehold.co/160x284/DBEAFE/3B82F6?text=Hook+2",
+      id: "minimal_highlight",
+      name: "Minimal Highlight",
+      description: "Sleek product-focused animation with clean transitions.",
+      thumbnail: "https://placehold.co/160x284/F3F4F6/111827?text=Minimal",
     },
     {
-      id: "hook3",
-      name: "Story Opener",
-      description: "Dramatic scene setter",
-      thumbnail: "https://placehold.co/160x284/FEE2E2/EF4444?text=Hook+3",
+      id: "vibe_opener",
+      name: "Vibe Opener",
+      description: "Trendy, social-style opener with fast cuts and music sync.",
+      thumbnail: "https://placehold.co/160x284/FEF3C7/78350F?text=Vibe",
+    },
+    {
+      id: "documentary_start",
+      name: "Documentary Start",
+      description: "Slow cinematic opener with narration and ambient tones.",
+      thumbnail: "https://placehold.co/160x284/D1D5DB/111827?text=Doc+Intro",
+    },
+    {
+      id: "bold_flash",
+      name: "Bold Flash",
+      description: "Fast-paced hook with big bold text and zoom transitions.",
+      thumbnail: "https://placehold.co/160x284/FFE4E6/BE123C?text=Bold",
+    },
+    {
+      id: "hero_scene",
+      name: "Hero Scene",
+      description: "A strong visual start with motion-focused elements.",
+      thumbnail: "https://placehold.co/160x284/DBEAFE/1E3A8A?text=Hero",
+    },
+    {
+      id: "neon_pulse",
+      name: "Neon Pulse",
+      description: "Vibrant, glowing effects and rhythmic animations.",
+      thumbnail: "https://placehold.co/160x284/111827/22D3EE?text=Neon",
+    },
+    {
+      id: "retro_wave",
+      name: "Retro Wave",
+      description: "80s-style grid animations, synth music, and vintage vibe.",
+      thumbnail: "https://placehold.co/160x284/FDE68A/7C3AED?text=Retro",
+    },
+    {
+      id: "lion_king_mufasa",
+      name: "Lion King Style",
+      description: "Majestic intro with sunrise and orchestral swell.",
+      thumbnail: "https://placehold.co/160x284/FCD34D/78350F?text=Mufasa",
     },
   ];
-
-  // Remotion Player properties
-  const REMOTION_DURATION_IN_FRAMES = FPS * 18; // 15 seconds total
 
   return (
     <>
@@ -150,7 +179,7 @@ export default function CreateVideoPage() {
           <span className="block sm:inline ml-2">{error}</span>
         </div>
       )}
-      <div className="flex gap-8 bg-[#E6E6E1] p-8 rounded-2xl">
+      <div className="flex flex-wrap-reverse lg:flex-nowrap gap-8 bg-[#E6E6E1] p-8 rounded-2xl">
         {/* Left Column - Controls */}
         <div className="w-full lg:w-1/2 flex flex-col space-y-6">
           {/* 1. Hook Section */}
@@ -162,6 +191,7 @@ export default function CreateVideoPage() {
               hooks={hookTemplates}
               selectedHook={selectedHook}
               onSelect={handleHookSelect}
+              handlePrompt={setPrompt}
             />
           </div>
 
@@ -177,7 +207,7 @@ export default function CreateVideoPage() {
             />
           </div>
 
-          {/* Additional Functionality Buttons */}
+          {/* Additional Functionality Button */}
           <div className="mt-6 space-y-4">
             <button
               onClick={() =>
@@ -188,7 +218,9 @@ export default function CreateVideoPage() {
                   captions
                 )
               }
-              disabled={!(userVideoPreviewUrl && selectedHook && captions)}
+              disabled={
+                !(uploadedS3Url && aiHookVideoUrl && captions && !isLoading)
+              }
               className="w-[75%] bg-black hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-75"
             >
               {"Export Video"}
@@ -213,39 +245,26 @@ export default function CreateVideoPage() {
 
         {/* Right Column - Video Preview */}
         <div className="w-full lg:w-1/2 flex flex-col items-center">
-          <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative shadow-xl border border-gray-300">
-            {/* Remotion Player integration */}
-            {userVideoPreviewUrl && selectedHook ? (
-              <Player
-                component={MainVideo} // Use the Root component which contains all compositions
-                durationInFrames={REMOTION_DURATION_IN_FRAMES}
-                fps={FPS}
-                compositionWidth={VIDEO_WIDTH}
-                compositionHeight={VIDEO_HEIGHT}
-                inputProps={{
-                  hookId: selectedHook,
-                  aiHookVideoUrl: aiHookVideoUrl,
-                  userVideoUrl: userVideoPreviewUrl,
-                  captions: captions,
-                }}
-                controls
-                className="w-full h-full"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
+          {/* Remotion Player integration */}
+          {(userVideoPreviewUrl || uploadedS3Url) &&
+          selectedHook &&
+          !isLoading ? (
+            <MainPlayer
+              aiHookVideoUrl={aiHookVideoUrl!}
+              selectedHook={selectedHook}
+              userVideoPreviewUrl={userVideoPreviewUrl!}
+              uploadedS3Url={uploadedS3Url ?? undefined}
+              captions={captions}
+            />
+          ) : (
+            <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative shadow-xl border border-gray-300">
+              <img
+                src="https://placehold.co/360x640/D1D5DB/6B7280?text=Video+Preview"
+                alt="Video Placeholder"
+                className="absolute inset-0 w-full h-full object-cover"
               />
-            ) : (
-              <>
-                <img
-                  src="https://placehold.co/360x640/D1D5DB/6B7280?text=Video+Preview"
-                  alt="Video Placeholder"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -256,7 +275,7 @@ export default function CreateVideoPage() {
             My Videos ({myVideos.length || 0})
           </h2>
         </div>
-        <div className="flex overflow-x-auto space-x-4 pb-4">
+        <div className="flex overflow-x-auto space-x-4 pb-6">
           {myVideos.length !== 0 ? (
             myVideos.map((video, index) => (
               <div
@@ -269,7 +288,7 @@ export default function CreateVideoPage() {
                 onClick={() => handleSelectMyVideo(video)}
               >
                 <video
-                  src={video.previewUrl}
+                  src={video.s3Url}
                   className="w-full h-full object-cover rounded-md"
                   controls={false}
                   muted

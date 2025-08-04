@@ -11,7 +11,7 @@ interface VideoGenerationState {
 }
 
 interface VideoGenerationActions {
-  generateAIHook: (hookId: string) => Promise<void>;
+  generateAIHook: (hookId: string, prompt?: string) => Promise<void>;
   generateCaptions: (userVideoUrl: string) => Promise<void>;
   uploadVideoToApi: (file: File) => Promise<string | null>;
   exportVideo: (
@@ -87,7 +87,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
     });
   };
 
-  const generateAIHook = async (hookId: string) => {
+  const generateAIHook = async (hookId: string, prompt?: string) => {
     setState((s) => ({
       ...s,
       isLoading: true,
@@ -99,7 +99,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
       const response = await fetch("/api/generate-hook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hookId }),
+        body: JSON.stringify({ hookId, prompt }),
       });
 
       if (!response.ok) {
@@ -120,7 +120,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
     }
   };
 
-  const generateCaptions = async (userVideoUrl: string) => {
+  const generateCaptions = async (userVideoUrl: string, prompt = "") => {
     setState((s) => ({
       ...s,
       isLoading: true,
@@ -142,7 +142,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
       const response = await fetch("/api/generate-captions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userVideoUrl }),
+        body: JSON.stringify({ userVideoUrl, prompt }),
       });
 
       if (!response.ok) {
@@ -251,13 +251,9 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
         console.log("Video uploaded to S3 successfully:", s3FileUrl);
 
         // After a successful upload, add the video to our local cache
-        const objectUrl = URL.createObjectURL(file);
         setState((s) => ({
           ...s,
-          myVideos: [
-            ...s.myVideos,
-            { name: file.name, s3Url: s3FileUrl, previewUrl: objectUrl },
-          ],
+          myVideos: [...s.myVideos, { name: file.name, s3Url: s3FileUrl }],
           error: null, // Clear the upload message
         }));
 
