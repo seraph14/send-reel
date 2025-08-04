@@ -34,7 +34,8 @@ export async function POST(req: Request) {
     const tempAudioPath = `/tmp/${randomUUID()}.mp3`;
 
     // Save the video stream to a temporary file
-    await pump(videoStream as any, createWriteStream(tempVideoPath));
+    // @ts-expect-error: This line works no need for type check
+    await pump(videoStream, createWriteStream(tempVideoPath));
 
     console.log(`Video successfully saved to temporary path: ${tempVideoPath}`);
 
