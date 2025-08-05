@@ -26,38 +26,47 @@ export const FPS = 30; // Frames per second
 
 export const HOOK_PROMPTS: Record<string, string> = {
   lion_king_mufasa: `
-    At sunrise, a wide savanna glows in golden light. The camera rises slowly to reveal a majestic lion standing atop Pride Rock, wind catching its mane. Epic orchestral score swells. Feels like a trailer moment. 9:16 cinematic vertical shot, 5s duration.
+    At sunrise, a vast savanna glows under golden light. The camera slowly ascends to reveal a majestic lion standing tall atop Pride Rock, its mane flowing in the wind. A swelling orchestral score builds tension. Epic trailer-style vertical shot (9:16), 5 seconds. 
+    Include bold animated text: "Strength. Legacy. Power."
   `,
 
   cinematic_intro: `
-    A 9:16 cinematic opening shot over epic landscapes with dynamic lens flares. Slow pan across misty mountains, bold golden text animates into frame. Dramatic orchestral soundtrack. Feels like the start of a blockbuster film trailer. 5s duration.
+    A vertical 9:16 cinematic opening over epic landscapes. The camera glides across mist-covered mountains with dramatic lens flares piercing the frame. The scene feels like the beginning of a blockbuster. Orchestral soundtrack swells with grandeur. Duration: 5s.
+    Default text overlay: "Every Story Has a Beginning"
   `,
 
   minimal_highlight: `
-    A clean 9:16 product scene on a white background. A modern gadget slowly rotates, bold black sans-serif text fades in with elegant motion. Subtle shadows, premium feel, minimal color palette. Ideal for luxury brands. 5s duration.
+    A clean 9:16 vertical product shot on a bright white background. A sleek, modern gadget rotates slowly in soft lighting. Subtle shadows and smooth transitions create a premium luxury feel. 5s duration.
+    Add elegant black sans-serif animated text: "Refined Simplicity"
   `,
 
   vibe_opener: `
-    A fast-paced 9:16 edit full of personality. Colorful city streets, energetic match cuts, fast zooms synced to upbeat music. Feels spontaneous and social-first — perfect for reels, TikTok, or short-form promos. 5s duration.
+    A high-energy 9:16 vertical edit filled with urban personality. Fast-paced match cuts of colorful city streets, smiling people, and dynamic camera zooms synced to upbeat music. Feels spontaneous and made for TikTok or Reels. 5s.
+    Animated graffiti-style text: "Let's Go"
   `,
 
   documentary_start: `
-    A slow and atmospheric vertical video in 9:16. Drone shot gliding over foggy forest at dawn. Ambient soundscape plays beneath soft narration. Designed to feel introspective, cinematic, and grounded. 5s duration.
+    A calm and atmospheric vertical (9:16) opener. A drone glides over foggy forest landscapes at dawn, lit by soft sunlight. An ambient soundscape plays beneath optional soft narration. Feels introspective and cinematic. 5s.
+    Include cinematic text: "Every Journey Begins Somewhere"
   `,
 
   bold_flash: `
-    High-impact 9:16 vertical animation. Bold text slams onto screen with glitch, zoom, and shake effects. Audio stingers match transitions. Feels urgent, perfect for ads or content hooks. 5s duration.
+    A high-impact 9:16 vertical motion intro. Large bold text slams into view with glitch, zoom, and shake effects. Screen flashes, dramatic audio stingers, and minimal visuals enhance urgency. Great for reels and ad hooks. 5s.
+    Text: "Wait for it..."
   `,
 
   hero_scene: `
-    A person stands alone at the edge of a glowing cliff. Wind moves through their hair, backlit by the rising sun. Inspirational music builds as the phrase “It Starts Here” fades in. Cinematic 9:16 vertical, 5s duration.
+    A lone figure stands at the edge of a glowing cliff, hair blowing in the wind. Backlit by a radiant sunrise, the camera slowly pushes in. Inspirational music swells. Vertical cinematic shot (9:16), 5s.
+    Default text overlay: "It Starts Here"
   `,
 
   neon_pulse: `
-    A futuristic 9:16 vertical loop with glowing neon lights and pulsing geometric shapes. City skyline in the background, reflections on wet streets, synthwave beat drives rhythm. Great for tech or nightlife. 5s duration.
+    A futuristic 9:16 vertical loop with pulsing neon lights and vibrant geometric shapes. Reflections shimmer on rain-slicked streets beneath a city skyline. The synthwave beat drives momentum. 5s duration.
+    Neon-styled text: "Pulse of the Night"
   `,
 
   retro_wave: `
-    1980s-inspired vertical animation in 9:16. Purple-orange sunset, vaporwave gridlines, glowing chrome text slides in. Feels like a retro arcade intro with synth beats and nostalgia. 5s duration.
+    A nostalgic 1980s-style vertical (9:16) animation. Glowing chrome text slides in over a purple-orange sunset, vaporwave gridlines stretch into the horizon. Synth beats underscore the scene. 5s duration.
+    Retro text: "Back to the Future"
   `,
 };

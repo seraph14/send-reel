@@ -109,55 +109,49 @@ export default function CreateVideoPage() {
       name: "Cinematic Intro",
       description:
         "Epic text reveal with dramatic music and lens flare effects.",
-      thumbnail: "https://placehold.co/160x284/1F2937/FBBF24?text=Cinematic",
-    },
-    {
-      id: "minimal_highlight",
-      name: "Minimal Highlight",
-      description: "Sleek product-focused animation with clean transitions.",
-      thumbnail: "https://placehold.co/160x284/F3F4F6/111827?text=Minimal",
+      thumbnail: "/cinematic.png",
     },
     {
       id: "vibe_opener",
       name: "Vibe Opener",
       description: "Trendy, social-style opener with fast cuts and music sync.",
-      thumbnail: "https://placehold.co/160x284/FEF3C7/78350F?text=Vibe",
+      thumbnail: "/vibe.png",
     },
     {
       id: "documentary_start",
       name: "Documentary Start",
       description: "Slow cinematic opener with narration and ambient tones.",
-      thumbnail: "https://placehold.co/160x284/D1D5DB/111827?text=Doc+Intro",
-    },
-    {
-      id: "bold_flash",
-      name: "Bold Flash",
-      description: "Fast-paced hook with big bold text and zoom transitions.",
-      thumbnail: "https://placehold.co/160x284/FFE4E6/BE123C?text=Bold",
+      thumbnail: "/documentary.png",
     },
     {
       id: "hero_scene",
       name: "Hero Scene",
       description: "A strong visual start with motion-focused elements.",
-      thumbnail: "https://placehold.co/160x284/DBEAFE/1E3A8A?text=Hero",
-    },
-    {
-      id: "neon_pulse",
-      name: "Neon Pulse",
-      description: "Vibrant, glowing effects and rhythmic animations.",
-      thumbnail: "https://placehold.co/160x284/111827/22D3EE?text=Neon",
+      thumbnail: "/hero.png",
     },
     {
       id: "retro_wave",
       name: "Retro Wave",
       description: "80s-style grid animations, synth music, and vintage vibe.",
-      thumbnail: "https://placehold.co/160x284/FDE68A/7C3AED?text=Retro",
+      thumbnail: "/retro.png",
     },
     {
-      id: "lion_king_mufasa",
-      name: "Lion King Style",
-      description: "Majestic intro with sunrise and orchestral swell.",
-      thumbnail: "https://placehold.co/160x284/FCD34D/78350F?text=Mufasa",
+      id: "minimal_highlight",
+      name: "Minimal Highlight",
+      description: "Sleek product-focused animation with clean transitions.",
+      thumbnail: "/minimal.png",
+    },
+    {
+      id: "neon_pulse",
+      name: "Neon Pulse",
+      description: "Vibrant, glowing effects and rhythmic animations.",
+      thumbnail: "/neon.png",
+    },
+    {
+      id: "bold_flash",
+      name: "Bold Flash",
+      description: "Fast-paced hook with big bold text and zoom transitions.",
+      thumbnail: "/bold.png",
     },
   ];
 
@@ -205,9 +199,7 @@ export default function CreateVideoPage() {
                   captions
                 )
               }
-              disabled={
-                !(uploadedS3Url && aiHookVideoUrl && captions && !isLoading)
-              }
+              disabled={true}
               className="w-[75%] bg-black hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-md shadow-md transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-75"
             >
               {"Export Video"}
