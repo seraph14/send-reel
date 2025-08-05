@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SendReel
 
-## Getting Started
+Create attention-grabbing short-form videos for TikTok, Reels, and YouTube Shorts by combining **AI-generated hooks**, your own footage, **auto-captions**, and **smooth transitions** all in a clean, browser-based workflow.
 
-First, run the development server:
+## ✨ Features
+
+- 🎬 **AI Video Hooks** – Select a cinematic intro (5–6s) generated via the Replicate API to grab attention. _(Optionally add a custom prompt when selecting a hook.)_
+- 📹 **User Video Upload** – Upload your own footage; it’s cached locally for faster reuse across sessions.
+- ✂️ **Trim Your Clip** – Precisely choose the segment of your video to include.
+- 💬 **Auto Captions** – Audio is transcribed using OpenAI Whisper to generate perfectly timed captions.
+- 🎞️ **Smooth Transitions** – A polished crossfade blends the hook and your video seamlessly.
+- 📱 **9:16 Output** – All videos are optimized for vertical platforms (1080x1920).
+
+---
+
+## 🛠️ Tech Stack
+
+- **Next.js** & **React** – Modern web UI.
+- **Tailwind CSS** – Rapid styling with utility classes.
+- **Remotion** – Programmatic video rendering.
+- **Replicate API** – AI video hook generation.
+- **OpenAI Whisper API** – For automatic caption generation.
+- **Vercel** – Deployment.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone "https://github.com/seraph14/send-reel"
+cd send-reel
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Set environment variables
 
-## Learn More
+Copy .env file here
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Start dev server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧑‍💻 Usage Flow
 
-## Deploy on Vercel
+1. **Upload Video**  
+   → Preview loads immediately in the player.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Trim**  
+   → Select start and end points of your clip using the slider.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Select AI Hook**  
+   → Pick a cinematic intro style and (optionally) add a custom prompt.
+
+4. **Auto-Captions**  
+   → Captions are generated automatically using OpenAI Whisper.
+
+5. **Preview**  
+   → See the combined result rendered with Remotion (hook + video + captions).
