@@ -3,7 +3,6 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import PromptModal from "./PromptModal";
 import { Pencil } from "lucide-react";
-import Image from "next/image";
 
 interface Hook {
   id: string;

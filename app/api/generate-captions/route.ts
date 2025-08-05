@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
 import { promisify } from "util";
-import { createReadStream, createWriteStream } from "fs";
+import { createReadStream } from "fs";
 import { pipeline } from "stream";
-import Ffmpeg from "fluent-ffmpeg";
 import OpenAI from "openai";
-import { randomUUID } from "crypto";
 
 const pump = promisify(pipeline);
 
@@ -23,48 +21,19 @@ export async function POST(req: Request) {
       );
     }
 
-    // --- STEP 1: Fetch the video from the public URL ---
-    const videoResponse = await fetch(userVideoUrl);
-    if (!videoResponse.ok) {
-      throw new Error("Failed to fetch video from the provided URL.");
-    }
+    const response = await fetch(userVideoUrl);
+    const arrayBuffer = await response.arrayBuffer();
 
-    const videoStream = videoResponse.body;
-    const tempVideoPath = `/tmp/${randomUUID()}.mp4`;
-    const tempAudioPath = `/tmp/${randomUUID()}.mp3`;
-
-    // Save the video stream to a temporary file
-    // @ts-expect-error: This line works no need for type check
-    await pump(videoStream, createWriteStream(tempVideoPath));
-
-    console.log(`Video successfully saved to temporary path: ${tempVideoPath}`);
-
-    // --- STEP 2: Extract audio using 'fluent-ffmpeg' ---
-    await new Promise<void>((resolve, reject) => {
-      Ffmpeg(tempVideoPath)
-        .noVideo()
-        .audioCodec("libmp3lame")
-        .save(tempAudioPath)
-        .on("end", () => {
-          console.log(
-            `Audio successfully extracted to temporary path: ${tempAudioPath}`
-          );
-          resolve();
-        })
-        .on("error", (err) => {
-          console.error(
-            "An error occurred during audio extraction:",
-            err.message
-          );
-          reject(err);
-        });
+    // Create a File object (required by OpenAI SDK)
+    const file = new File([Buffer.from(arrayBuffer)], "audio.mp3", {
+      type: "audio/mpeg",
     });
 
-    // --- STEP 3: Send audio to an AI transcription service (e.g., OpenAI) ---
-    // In a real application, you would configure your API key in an environment variable.
+    // // Send audio to an AI transcription service (e.g., OpenAI) ---
+    // // In a real application, you would configure your API key in an environment variable.
     const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const transcription = await openai.audio.transcriptions.create({
-      file: createReadStream(tempAudioPath),
+      file,
       model: "whisper-1",
       response_format: "verbose_json",
     });

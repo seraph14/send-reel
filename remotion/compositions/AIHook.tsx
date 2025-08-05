@@ -28,7 +28,7 @@ export const AIHook = ({ aiHookVideoUrl }: z.infer<typeof AIHookProps>) => {
       <Video
         src={
           aiHookVideoUrl ||
-          "https://replicate.delivery/xezq/X5K2GEyxxH77I5P9QNAjbetx4gD2JimZreZSGEDrSKcBEWHVA/tmpxtbgn5mq.mp4"
+          "https://replicate.delivery/xezq/4fRKch0jBnVwSSdfbDXn2TgdeLOJpTg5qd8svffoPs7xBGfRF/tmpbup3fm2_.mp4"
         }
         className="w-full h-full object-cover"
         volume={(f) =>

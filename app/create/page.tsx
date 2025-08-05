@@ -245,9 +245,11 @@ export default function CreateVideoPage() {
         {/* Right Column - Video Preview */}
         <div className="w-full lg:w-1/2 flex flex-col items-center">
           {/* Remotion Player integration */}
-          {(userVideoPreviewUrl || uploadedS3Url) &&
-          selectedHook &&
-          !isLoading ? (
+          {isLoading ? (
+            <div className="w-full max-w-sm aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center shadow-xl border border-gray-300">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-gray-600 border-opacity-50"></div>
+            </div>
+          ) : (userVideoPreviewUrl || uploadedS3Url) && selectedHook ? (
             <MainPlayer
               aiHookVideoUrl={aiHookVideoUrl!}
               selectedHook={selectedHook}
