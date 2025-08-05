@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { promisify } from "util";
-import { createReadStream } from "fs";
 import { pipeline } from "stream";
 import OpenAI from "openai";
 

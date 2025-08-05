@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import Head from "next/head";
 import Link from "next/link";
 import { Calendar, House, Video } from "lucide-react";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,7 +57,7 @@ export default function RootLayout({
                 className="flex items-center gap-3 text-gray-600 hover:text-black"
               >
                 <Video className="w-5 h-5" />
-                <span className="hidden md:inline">Hook + Demo</span>
+                <span className="hidden md:inline">Hook + Video</span>
               </Link>
 
               <Link
@@ -70,7 +71,10 @@ export default function RootLayout({
           </aside>
 
           {/* Main Content */}
-          <main className="flex-1 p-8 overflow-y-auto">{children}</main>
+          <main className="flex-1 p-8 overflow-y-auto">
+            {children}
+            <Toaster />
+          </main>
         </div>
       </body>
     </html>

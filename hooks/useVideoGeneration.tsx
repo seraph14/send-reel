@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CaptionWord, MyVideo } from "@/lib/types";
+import { toast } from "sonner";
 
 interface VideoGenerationState {
   aiHookVideoUrl: string | null;
@@ -96,6 +97,8 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
     }));
     try {
       console.log("Initiating AI hook generation...");
+      toast("Initiating AI Hook Generation");
+
       const response = await fetch("/api/generate-hook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -114,9 +117,15 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
         isLoading: false,
       }));
       console.log("AI hook generated:", data.videoUrl);
+      toast.success("AI hook generated!");
     } catch (err: any) {
-      setState((s) => ({ ...s, error: err.message, isLoading: false }));
+      setState((s) => ({
+        ...s,
+        error: "AI hook generation error",
+        isLoading: false,
+      }));
       console.error("AI hook generation error:", err);
+      toast.error("AI hook generation failed!");
     }
   };
 
@@ -131,7 +140,6 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
     if (!userVideoUrl) {
       setState((s) => ({
         ...s,
-        error: "Please upload a video first to generate captions.",
         isLoading: false,
       }));
       return;
@@ -139,6 +147,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
 
     try {
       console.log("Initiating caption generation...");
+      toast("Initiating Caption Generation!");
       const response = await fetch("/api/generate-captions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -155,10 +164,13 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
         ...s,
         captions: data.words,
         isLoading: false,
+        status: "Captions Generated.",
       }));
       console.log("Captions generated:", data.text);
+      toast.success("Captions generated!");
     } catch (err: any) {
       setState((s) => ({ ...s, error: err.message, isLoading: false }));
+      toast.error("Captions generation failed!");
       console.error("Caption generation error:", err);
     }
   };
@@ -226,35 +238,50 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
           return existingVideo.s3Url;
         }
 
-        console.log("Initiating video upload to S3 via API route...");
         setState((s) => ({
           ...s,
           isLoading: true,
-          error: "Uploading video to S3...",
         }));
 
+        toast("Uploading Video...");
+
+        // 1. Get presigned data from API
+        const res = await fetch("/api/upload-video/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+        });
+
+        console.log(res);
+
+        const { url, fields, s3FileUrl } = await res.json();
+
+        // 2. Build form data for S3
         const formData = new FormData();
+        Object.entries(fields).forEach(([key, value]) => {
+          // @ts-expect-error: This line works no need for type check
+          formData.append(key, value);
+        });
         formData.append("file", file);
 
-        // Call our API route which handles the S3 upload
-        const uploadResponse = await fetch("/api/upload-video", {
+        // 3. Upload directly to S3
+        const upload = await fetch(url, {
           method: "POST",
           body: formData,
         });
 
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json();
-          throw new Error(errorData.error || "Failed to upload video to S3.");
+        if (!upload.ok) {
+          console.log(upload);
+          throw new Error("Failed to upload video to S3.");
         }
 
-        const { s3FileUrl } = await uploadResponse.json();
         console.log("Video uploaded to S3 successfully:", s3FileUrl);
+        toast.success("Video uploaded successfully!");
 
         // After a successful upload, add the video to our local cache
         setState((s) => ({
           ...s,
           myVideos: [...s.myVideos, { name: file.name, s3Url: s3FileUrl }],
-          error: null, // Clear the upload message
         }));
 
         return s3FileUrl;
@@ -263,6 +290,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
           err.message || "An unknown error occurred during upload.";
         setState((s) => ({ ...s, error: errorMessage }));
         console.error("Video upload error:", err);
+        toast.error("Video uploaded failed!");
         return null;
       } finally {
         setState((s) => ({ ...s, isLoading: false }));

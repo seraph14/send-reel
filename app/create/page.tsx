@@ -6,6 +6,7 @@ import UserVideoUploader from "@/components/UserVideoUploader";
 import AIHookSelector from "@/components/AIHookSelector";
 import { MyVideo } from "@/lib/types";
 import MainPlayer from "@/components/MainPlayer";
+import { toast } from "sonner";
 
 export default function CreateVideoPage() {
   const [selectedHook, setSelectedHook] = useState<string | null>(null);
@@ -21,7 +22,6 @@ export default function CreateVideoPage() {
     aiHookVideoUrl,
     captions,
     isLoading,
-    error,
     downloadLink,
     generateAIHook,
     generateCaptions,
@@ -95,9 +95,6 @@ export default function CreateVideoPage() {
   };
 
   const handleSelectMyVideo = (video: MyVideo) => {
-    // Reset any existing states
-    setSelectedHook(null);
-
     // Set the selected video's details
     setUserVideoFile(null); // No file object, as it's from the cache
     setUserVideoPreviewUrl(video.s3Url);
@@ -169,15 +166,6 @@ export default function CreateVideoPage() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         Create UGC Videos
       </h1>
-      {error && (
-        <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 w-full max-w-4xl"
-          role="alert"
-        >
-          <strong className="font-bold">Error!</strong>
-          <span className="block sm:inline ml-2">{error}</span>
-        </div>
-      )}
       <div className="flex flex-wrap-reverse lg:flex-nowrap gap-8 bg-[#E6E6E1] p-8 rounded-2xl">
         {/* Left Column - Controls */}
         <div className="w-full lg:w-1/2 flex flex-col space-y-6">
