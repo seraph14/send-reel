@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Send Reel",
-  description: "Get you UGC videos",
+  description: "Create attention grabbing short form videos",
 };
 
 export default function RootLayout({
