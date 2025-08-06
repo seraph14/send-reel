@@ -57,12 +57,11 @@ export async function POST(request: Request) {
     // --- STEP 1: Run the Replicate prediction ---
     // The `replicate.run()` method automatically handles starting the prediction
     // and polling for the result, returning the final output.
-    const output = await replicate.run("google/veo-3", {
+    const output = await replicate.run("bytedance/seedance-1-pro", {
       input: {
         prompt: hookData,
         aspect_ratio: "9:16",
-        output_format: "mp4",
-        duration: 6,
+        duration: 5,
       },
     });
 

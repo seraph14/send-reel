@@ -14,6 +14,10 @@ export default function CreateVideoPage() {
   const [userVideoPreviewUrl, setUserVideoPreviewUrl] = useState<string | null>(
     null
   );
+
+  const [enableCaptions, setEnableCaptions] = useState<boolean>(true);
+  const [captionYOffset, setCaptionYOffset] = useState<number>(50); // in percent
+
   const [prompt, setPrompt] = useState<string>("");
   const [uploadedS3Url, setUploadedS3Url] = useState<string | null>(null);
 
@@ -41,13 +45,13 @@ export default function CreateVideoPage() {
 
   // automatically generate captions
   useEffect(() => {
-    if (uploadedS3Url) {
+    if (uploadedS3Url && enableCaptions) {
       console.log(
         "User video and hook selected. Automatically generating captions..."
       );
       generateCaptions(uploadedS3Url);
     }
-  }, [uploadedS3Url]);
+  }, [uploadedS3Url, enableCaptions]);
 
   const handleHookSelect = (hookId: string) => {
     setSelectedHook(hookId);
@@ -135,10 +139,44 @@ export default function CreateVideoPage() {
               userVideoUrl={userVideoPreviewUrl}
               onFileChange={handleFileChange}
             />
+
+            <div className="mt-6 space-y-6 bg-white rounded-xl p-4 shadow-sm">
+              {/* Captions Toggle */}
+              <div className="flex items-center space-between">
+                <label className="font-medium text-gray-800 mr-4">
+                  Enable Captions
+                </label>
+                <input
+                  id="captions-toggle"
+                  type="checkbox"
+                  checked={enableCaptions}
+                  onChange={() => setEnableCaptions((prev) => !prev)}
+                  className="relative h-6 w-11 cursor-pointer appearance-none rounded-full bg-gray-300 checked:bg-indigo-500 transition duration-300 before:absolute before:left-1 before:top-1 before:h-4 before:w-4 before:rounded-full before:bg-white before:transition-transform checked:before:translate-x-5"
+                />
+              </div>
+
+              {/* Caption Position Slider */}
+              <div>
+                <label className="text-sm font-medium text-gray-800 block mb-2">
+                  Vertical Position:{" "}
+                  <span className="font-semibold">{captionYOffset}%</span>
+                </label>
+                <input
+                  type="range"
+                  disabled={!enableCaptions}
+                  min={0}
+                  max={100}
+                  step={5}
+                  value={captionYOffset}
+                  onChange={(e) => setCaptionYOffset(Number(e.target.value))}
+                  className="w-full appearance-none h-2 bg-gray-300 rounded-full outline-none accent-indigo-600"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Export Button */}
-          <div className="mt-6 space-y-4">
+          <div className="mt-1 space-y-4">
             <button
               onClick={() =>
                 exportVideo(
@@ -184,7 +222,8 @@ export default function CreateVideoPage() {
               selectedHook={selectedHook}
               userVideoPreviewUrl={userVideoPreviewUrl!}
               uploadedS3Url={uploadedS3Url ?? undefined}
-              captions={captions}
+              captions={enableCaptions ? captions : []}
+              captionYOffset={captionYOffset}
             />
           ) : (
             <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative shadow-xl border border-gray-300">

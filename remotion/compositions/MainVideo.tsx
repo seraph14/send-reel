@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   AbsoluteFill,
   Sequence,
@@ -7,7 +7,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { CompositionProps } from "@/lib/types";
+import { CaptionWord, CompositionProps } from "@/lib/types";
 import z from "zod";
 import { AIHook } from "./AIHook";
 
@@ -15,6 +15,7 @@ export const MainVideo = ({
   aiHookVideoUrl,
   userVideoUrl,
   captions,
+  captionYOffset,
 }: z.infer<typeof CompositionProps>) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -33,15 +34,44 @@ export const MainVideo = ({
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
-  // Find the current line to display based on video time
-  const currentLine = captions.find((caption) => {
-    if (caption) {
-      return (
-        userVideoCurrentTimeInSeconds >= caption.start &&
-        userVideoCurrentTimeInSeconds <= caption.end
-      );
+  const segmentWords = (words: CaptionWord[]): CaptionWord[][] => {
+    const lines: CaptionWord[][] = [];
+    let currentLine: CaptionWord[] = [];
+    let lastEnd = 0;
+
+    for (let i = 0; i < words.length; i++) {
+      const word = { ...words[i] };
+      const gap = word.start - lastEnd;
+      const shouldStartNewLine = currentLine.length >= 5 || gap > 3;
+
+      const nextWord = words[i + 1];
+      const isNextWordCapital = nextWord && /^[A-Z]/.test(nextWord.word);
+      const isLastWord = i === words.length - 1;
+      currentLine.push(word);
+
+      if (
+        (shouldStartNewLine && currentLine.length) ||
+        isNextWordCapital ||
+        isLastWord
+      ) {
+        lines.push(currentLine);
+        currentLine = [];
+      }
+
+      lastEnd = word.end;
     }
-    return false;
+    if (currentLine.length) lines.push(currentLine);
+    return lines;
+  };
+
+  const captionLines = useMemo(() => segmentWords(captions), [captions]);
+  const currentCaptionLine = captionLines.find((line) => {
+    const lineStart = line[0]?.start ?? 0;
+    const lineEnd = line[line.length - 1]?.end ?? 0;
+    return (
+      userVideoCurrentTimeInSeconds >= lineStart &&
+      userVideoCurrentTimeInSeconds <= lineEnd
+    );
   });
 
   return (
@@ -66,7 +96,6 @@ export const MainVideo = ({
               <Video
                 src={userVideoUrl}
                 className="w-full h-full object-cover"
-                startFrom={0}
                 volume={(f) =>
                   interpolate(f, [0, transitionDuration], [0, 1], {
                     extrapolateLeft: "clamp",
@@ -95,32 +124,46 @@ export const MainVideo = ({
           </AbsoluteFill>
         </Sequence>
         {/* Captions overlay */}
-        {currentLine && (
-          <AbsoluteFill
-            className="items-center justify-center px-8" // Vertically and horizontally center
-            style={{ opacity: captionOpacity }}
-          >
-            <div className="w-full max-w-4xl px-6 py-4 rounded-lg">
-              <p
-                className="text-white text-6xl font-bold text-center leading-snug flex flex-wrap justify-center"
-                style={{
-                  // Enhanced text shadow for better visibility on any background
-                  textShadow:
-                    "2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(0,0,0,0.8)",
-                  WebkitTextStroke: "1px black", // Adds a black outline to the text
-                }}
-              >
-                <span
-                  className={`mx-2 transition-colors duration-200 ${
-                    currentLine ? "text-yellow-400" : "text-white"
-                  }`}
-                >
-                  {currentLine.text}
-                </span>
-              </p>
-            </div>
-          </AbsoluteFill>
-        )}
+        <AbsoluteFill
+          className="flex justify-center px-8"
+          style={{
+            opacity: captionOpacity,
+            transform: `translateY(${captionYOffset - 50}%)`, // or `${captionYOffset}px` if you're using pixels
+          }}
+        >
+          <div className="w-full max-w-4xl px-6 py-4 rounded-lg">
+            <p
+              className="text-white text-6xl font-bold text-center leading-snug flex flex-wrap justify-center"
+              style={{
+                textShadow:
+                  "2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(0,0,0,0.8)",
+                WebkitTextStroke: "1px black",
+              }}
+            >
+              {currentCaptionLine?.map((wordObj, index) => {
+                const isActive =
+                  userVideoCurrentTimeInSeconds >= wordObj.start &&
+                  userVideoCurrentTimeInSeconds <= wordObj.end;
+
+                return (
+                  <span
+                    key={index}
+                    className={`mx-1 transition-colors duration-300 ${
+                      isActive ? "text-yellow-400" : "text-white"
+                    }`}
+                    style={{
+                      textShadow:
+                        "2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(0,0,0,0.8)",
+                      WebkitTextStroke: "0.5px black",
+                    }}
+                  >
+                    {wordObj.word}
+                  </span>
+                );
+              })}
+            </p>
+          </div>
+        </AbsoluteFill>
       </AbsoluteFill>
     </>
   );

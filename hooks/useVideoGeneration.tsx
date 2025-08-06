@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CaptionWord, MyVideo } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -129,6 +129,8 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
     }
   };
 
+  const cacheRef = useRef<Map<string, any>>(new Map());
+
   const generateCaptions = async (userVideoUrl: string, prompt = "") => {
     setState((s) => ({
       ...s,
@@ -141,6 +143,17 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
       setState((s) => ({
         ...s,
         isLoading: false,
+      }));
+      return;
+    }
+
+    if (cacheRef.current.has(userVideoUrl)) {
+      console.log("⚡ Using cached captions");
+      setState((s) => ({
+        ...s,
+        captions: cacheRef.current.get(userVideoUrl),
+        isLoading: false,
+        status: "Captions Generated.",
       }));
       return;
     }
@@ -168,6 +181,7 @@ export const useVideoGeneration = (): useVideoGenerationReturn => {
       }));
       console.log("Captions generated:", data.text);
       toast.success("Captions generated!");
+      cacheRef.current.set(userVideoUrl, data.words);
     } catch (err: any) {
       setState((s) => ({ ...s, error: err.message, isLoading: false }));
       toast.error("Captions generation failed!");

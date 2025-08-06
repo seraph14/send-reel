@@ -31,6 +31,7 @@ export async function POST(req: Request) {
       file,
       model: "whisper-1",
       response_format: "verbose_json",
+      timestamp_granularities: ["word"],
     });
 
     console.log("Successfully formatted and returned captions.");
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         text: transcription.text,
-        words: transcription.segments,
+        words: transcription.words,
       },
       { status: 200 }
     );

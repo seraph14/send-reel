@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export interface CaptionWord {
-  text: string;
+  word: string;
   start: number;
   end: number;
 }
@@ -12,7 +12,7 @@ export interface MyVideo {
 }
 
 const captionSchema = z.object({
-  text: z.string(),
+  word: z.string(),
   start: z.number(),
   end: z.number(),
 });
@@ -22,6 +22,7 @@ export const CompositionProps = z.object({
   aiHookVideoUrl: z.string().nullable(),
   userVideoUrl: z.string(),
   captions: captionSchema.array(),
+  captionYOffset: z.number(),
 });
 
 export const AIHookProps = z.object({

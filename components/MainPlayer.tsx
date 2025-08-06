@@ -13,12 +13,14 @@ export default function MainPlayer({
   uploadedS3Url,
   userVideoPreviewUrl,
   captions,
+  captionYOffset,
 }: {
   selectedHook: string;
   aiHookVideoUrl: string;
   userVideoPreviewUrl?: string;
   uploadedS3Url?: string;
   captions: CaptionWord[];
+  captionYOffset: number;
 }) {
   // We use a fallback duration for initial render, it will be updated once video metadata is loaded.
   const [videoDurationInSeconds, setVideoDurationInSeconds] =
@@ -73,6 +75,7 @@ export default function MainPlayer({
             aiHookVideoUrl: aiHookVideoUrl,
             userVideoUrl: uploadedS3Url ?? userVideoPreviewUrl!,
             captions: captions,
+            captionYOffset,
             trim,
           }}
           controls
