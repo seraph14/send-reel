@@ -34,17 +34,25 @@ export default function MainPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    setTrim({ start: 0, end: videoDurationInSeconds });
+  }, [videoDurationInSeconds]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video || !uploadedS3Url) return;
 
     const handleLoadedMetadata = () => {
       if (video.duration && isFinite(video.duration)) {
         setVideoDurationInSeconds(video.duration);
-        setTrim({ start: 0, end: video.duration });
       }
     };
 
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
+
+    // If already loaded
+    if (video.readyState >= 1) {
+      handleLoadedMetadata();
+    }
 
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
@@ -59,7 +67,7 @@ export default function MainPlayer({
       <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative shadow-xl border border-gray-300">
         <video
           ref={videoRef}
-          src={userVideoPreviewUrl ?? uploadedS3Url!}
+          src={uploadedS3Url!}
           style={{ display: "none" }}
           preload="metadata"
         />
@@ -76,7 +84,6 @@ export default function MainPlayer({
             userVideoUrl: uploadedS3Url ?? userVideoPreviewUrl!,
             captions: captions,
             captionYOffset,
-            trim,
           }}
           controls
           className="w-full h-full"
@@ -88,11 +95,11 @@ export default function MainPlayer({
         />
       </div>
       <div className="">
-        {(userVideoPreviewUrl || uploadedS3Url) && (
+        {uploadedS3Url && (
           <VideoTrimSlider
             duration={videoDurationInSeconds}
-            onChange={(start, end) => {
-              setTrim({ start, end });
+            onChange={(end) => {
+              setTrim({ start: 0, end });
             }}
           />
         )}
