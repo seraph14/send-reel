@@ -63,8 +63,8 @@ export default function MainPlayer({
   const trimmedDurationInFrames = Math.round((trim.end - trim.start) * FPS);
 
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center relative shadow-xl border border-gray-300">
+    <div className="flex flex-col h-full w-full items-center">
+      <div className="w-full max-w-sm aspect-[9/16] bg-gray-200 rounded-lg overflow-hidden flex justify-center relative shadow-xl border border-gray-300">
         <video
           ref={videoRef}
           src={uploadedS3Url!}
@@ -94,7 +94,7 @@ export default function MainPlayer({
           }}
         />
       </div>
-      <div className="">
+      <div className="w-full flex justify-center">
         {uploadedS3Url && (
           <VideoTrimSlider
             duration={videoDurationInSeconds}
