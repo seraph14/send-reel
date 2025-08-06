@@ -27,7 +27,7 @@ export default function MainPlayer({
     useState<number>(15);
   const [trim, setTrim] = useState<{ start: number; end: number }>({
     start: 0,
-    end: 15,
+    end: videoDurationInSeconds,
   });
 
   // Use a ref to the video element to get its metadata.
@@ -35,7 +35,7 @@ export default function MainPlayer({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !userVideoPreviewUrl || !uploadedS3Url) return;
+    if (!video || !uploadedS3Url) return;
 
     const handleLoadedMetadata = () => {
       if (video.duration && isFinite(video.duration)) {
@@ -49,7 +49,7 @@ export default function MainPlayer({
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
-  }, [userVideoPreviewUrl, uploadedS3Url]);
+  }, [uploadedS3Url]);
 
   // Calculate the duration of the trimmed segment in frames.
   const trimmedDurationInFrames = Math.round((trim.end - trim.start) * FPS);
