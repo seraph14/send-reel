@@ -26,10 +26,8 @@ export default function CreateVideoPage() {
     aiHookVideoUrl,
     captions,
     isLoading,
-    downloadLink,
     generateAIHook,
     generateCaptions,
-    exportVideo,
     uploadVideoToApi,
     myVideos,
   } = useVideoGeneration();
@@ -176,7 +174,7 @@ export default function CreateVideoPage() {
           </div>
 
           {/* Export Button */}
-          <div className="mt-1 space-y-4">
+          {/* <div className="mt-1 space-y-4">
             <button
               onClick={() =>
                 exportVideo(
@@ -191,8 +189,8 @@ export default function CreateVideoPage() {
             >
               {"Export Video"}
             </button>
-          </div>
-          {downloadLink && (
+          </div> */}
+          {/* {downloadLink && (
             <div className="mt-4 text-center">
               <p className="text-green-600 font-semibold mb-2">
                 Video Exported!
@@ -206,7 +204,7 @@ export default function CreateVideoPage() {
                 Download Video
               </a>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Right Column - Video Preview */}

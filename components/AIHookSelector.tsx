@@ -123,6 +123,7 @@ const AIHookSelector = ({
           onClose={() => setPromptHook(null)}
           onSave={(newPrompt) => {
             handlePrompt(newPrompt);
+            handleHookClick(promptHook);
           }}
           description={promptHook.description}
           hookName={promptHook.name}

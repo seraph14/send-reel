@@ -125,7 +125,7 @@ export const MainVideo = ({
         </Sequence>
         {/* Captions overlay */}
         <AbsoluteFill
-          className="flex justify-center px-8"
+          className="flex justify-center items-center px-auto"
           style={{
             opacity: captionOpacity,
             transform: `translateY(${captionYOffset - 50}%)`, // or `${captionYOffset}px` if you're using pixels
