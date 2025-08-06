@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useVideoGeneration } from "@/hooks/useVideoGeneration";
 import UserVideoUploader from "@/components/UserVideoUploader";
 import AIHookSelector from "@/components/AIHookSelector";
 import { MyVideo } from "@/lib/types";
 import MainPlayer from "@/components/MainPlayer";
-import { toast } from "sonner";
 
 export default function CreateVideoPage() {
   const [selectedHook, setSelectedHook] = useState<string | null>(null);
@@ -72,6 +72,7 @@ export default function CreateVideoPage() {
       const MAX_FILE_SIZE_MB = 100;
       if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
         console.error(`Video file size exceeds ${MAX_FILE_SIZE_MB}MB limit.`);
+        toast.error(`Video file size exceeds ${MAX_FILE_SIZE_MB}MB limit.`);
         setUserVideoFile(null);
         setUserVideoPreviewUrl(null);
         return;
@@ -91,69 +92,18 @@ export default function CreateVideoPage() {
       // Start the upload to S3 via the API immediately using the hook
       const s3FileUrl = await uploadVideoToApi(file);
       setUploadedS3Url(s3FileUrl);
+      toast.success(`Video uploaded sucessfully!`);
     }
   };
 
   const handleSelectMyVideo = (video: MyVideo) => {
     // Set the selected video's details
-    setUserVideoFile(null); // No file object, as it's from the cache
+    setUserVideoFile(null);
     setUserVideoPreviewUrl(video.s3Url);
     setUploadedS3Url(video.s3Url);
 
     console.log("Selected video from cache:", video.name);
   };
-
-  const hookTemplates = [
-    {
-      id: "cinematic_intro",
-      name: "Cinematic Intro",
-      description:
-        "Epic text reveal with dramatic music and lens flare effects.",
-      thumbnail: "/cinematic.png",
-    },
-    {
-      id: "vibe_opener",
-      name: "Vibe Opener",
-      description: "Trendy, social-style opener with fast cuts and music sync.",
-      thumbnail: "/vibe.png",
-    },
-    {
-      id: "documentary_start",
-      name: "Documentary Start",
-      description: "Slow cinematic opener with narration and ambient tones.",
-      thumbnail: "/documentary.png",
-    },
-    {
-      id: "hero_scene",
-      name: "Hero Scene",
-      description: "A strong visual start with motion-focused elements.",
-      thumbnail: "/hero.png",
-    },
-    {
-      id: "retro_wave",
-      name: "Retro Wave",
-      description: "80s-style grid animations, synth music, and vintage vibe.",
-      thumbnail: "/retro.png",
-    },
-    {
-      id: "minimal_highlight",
-      name: "Minimal Highlight",
-      description: "Sleek product-focused animation with clean transitions.",
-      thumbnail: "/minimal.png",
-    },
-    {
-      id: "neon_pulse",
-      name: "Neon Pulse",
-      description: "Vibrant, glowing effects and rhythmic animations.",
-      thumbnail: "/neon.png",
-    },
-    {
-      id: "bold_flash",
-      name: "Bold Flash",
-      description: "Fast-paced hook with big bold text and zoom transitions.",
-      thumbnail: "/bold.png",
-    },
-  ];
 
   return (
     <>
@@ -169,7 +119,6 @@ export default function CreateVideoPage() {
               1. Hook
             </h2>
             <AIHookSelector
-              hooks={hookTemplates}
               selectedHook={selectedHook}
               onSelect={handleHookSelect}
               handlePrompt={setPrompt}
@@ -188,7 +137,7 @@ export default function CreateVideoPage() {
             />
           </div>
 
-          {/* Additional Functionality Button */}
+          {/* Export Button */}
           <div className="mt-6 space-y-4">
             <button
               onClick={() =>

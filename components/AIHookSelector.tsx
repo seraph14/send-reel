@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import PromptModal from "./PromptModal";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
+import { HOOK_TEMPLATES } from "@/lib/constants";
 
 interface Hook {
   id: string;
@@ -13,14 +14,12 @@ interface Hook {
 }
 
 interface HookSelectorProps {
-  hooks: Hook[];
   selectedHook: string | null;
   onSelect: (hookId: string) => void;
   handlePrompt: Dispatch<SetStateAction<string>>;
 }
 
 const AIHookSelector = ({
-  hooks,
   selectedHook,
   onSelect,
   handlePrompt,
@@ -29,6 +28,7 @@ const AIHookSelector = ({
   const [loadingHookId, setLoadingHookId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hooks = HOOK_TEMPLATES;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {

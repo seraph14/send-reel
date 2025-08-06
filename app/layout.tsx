@@ -10,7 +10,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Send Reel",
-  description: "Create attention grabbing short form videos",
+  description:
+    "Effortlessly create attention grabbing short videos. Add AI-generated hooks, automatic captions, and export stunning UGC clips for social media in minutes.",
 };
 
 export default function RootLayout({
